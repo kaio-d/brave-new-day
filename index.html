@@ -87,6 +87,57 @@
         </footer>
       </div>
     </div>
+
+    <!-- ========================================================================
+         FASE 2: TRAILER EXPANSÍVEL (0x0 A 100vw x 100vh) & PLAYER CUSTOMIZADO
+         ======================================================================== -->
+    <div class="hero-trailer-container" id="trailer">
+      <div class="trailer-wrapper">
+        <video class="trailer-video" id="trailerVideo" src="assets/trailer.mp4" playsinline muted loop preload="auto"></video>
+
+        <!-- Overlay central de play/pause ao clicar no vídeo -->
+        <div class="trailer-overlay-play" id="trailerOverlayPlay" aria-hidden="true">
+          <svg class="overlay-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+
+        <!-- Barra de Controles Customizada do Player -->
+        <div class="trailer-controls" id="trailerControls">
+          <!-- Botão Play / Pause -->
+          <button type="button" class="trailer-btn-control" id="trailerPlayBtn" aria-label="Reproduzir ou Pausar">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+
+          <!-- Barra de Progresso / Seeker com arraste e clique -->
+          <div class="trailer-progress-container" id="trailerProgressContainer" role="slider" aria-label="Barra de progresso do trailer" tabindex="0">
+            <div class="trailer-progress-bar" id="trailerProgressBar">
+              <div class="trailer-progress-thumb"></div>
+            </div>
+          </div>
+
+          <!-- Indicador de Tempo Atual e Duração -->
+          <span class="trailer-time" id="trailerTime">0:00 / 0:00</span>
+
+          <!-- Botão de Ativar/Desativar Som (Mute/Unmute) -->
+          <button type="button" class="trailer-btn-control" id="trailerMuteBtn" aria-label="Ativar ou Desativar Áudio">
+            <!-- Ícone Mudo -->
+            <svg class="icon-volume-muted" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+            </svg>
+            <!-- Ícone Som Ativo -->
+            <svg class="icon-volume-high" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ========================================================================
@@ -195,11 +246,25 @@
         });
       }
 
-      // Navegação suave ao clicar em âncoras (ex: #elenco)
+      // Navegação suave ao clicar em âncoras (ex: #trailer, #elenco)
       document.querySelectorAll('a[href^="#"]').forEach((link) => {
         link.addEventListener('click', (e) => {
           const targetId = link.getAttribute('href');
           if (targetId && targetId !== '#') {
+            if (targetId === '#trailer') {
+              e.preventDefault();
+              const st = heroTL.scrollTrigger;
+              if (st) {
+                const targetScroll = st.start + (st.end - st.start) * 0.92;
+                if (smoother) {
+                  smoother.scrollTo(targetScroll, true);
+                } else {
+                  window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+                }
+              }
+              return;
+            }
+
             const targetEl = document.querySelector(targetId);
             if (targetEl) {
               e.preventDefault();
@@ -251,18 +316,34 @@
         chars = splitTextFallback(movieDesc);
       }
 
-      // 5. Timeline GSAP com Hero Pinada
+      // Elementos do Trailer e Player Customizado
+      const trailerContainer = document.getElementById('trailer');
+      const trailerVideo = document.getElementById('trailerVideo');
+      const trailerPlayBtn = document.getElementById('trailerPlayBtn');
+      const trailerOverlayPlay = document.getElementById('trailerOverlayPlay');
+      const iconPlay = trailerPlayBtn.querySelector('.icon-play');
+      const iconPause = trailerPlayBtn.querySelector('.icon-pause');
+      const trailerMuteBtn = document.getElementById('trailerMuteBtn');
+      const iconMuted = trailerMuteBtn.querySelector('.icon-volume-muted');
+      const iconHigh = trailerMuteBtn.querySelector('.icon-volume-high');
+      const trailerProgressBar = document.getElementById('trailerProgressBar');
+      const trailerProgressContainer = document.getElementById('trailerProgressContainer');
+      const trailerTime = document.getElementById('trailerTime');
+      const trailerControls = document.getElementById('trailerControls');
+
+      // 5. Timeline GSAP com Hero Pinada (Fase 1: Simbionte + Fase 2: Trailer Expansível)
       const heroTL = gsap.timeline({
         scrollTrigger: {
           trigger: '.hero-page',
           start: 'top top',
-          end: '+=2400',
+          end: '+=5200',
           pin: true,
           scrub: 0.8,
           anticipatePin: 1
         }
       });
 
+      // --- FASE 1: TRANSIÇÃO DO SIMBIONTE (0.0 até 1.0) ---
       // A. Sequência de frames: frame 0 a 58 com tamanho original 1920x1080 preservado
       const frameObj = { frame: 0 };
       heroTL.to(frameObj, {
@@ -293,11 +374,23 @@
         duration: 0.85
       }, 0.08);
 
+      // Transição da cor do parágrafo: começa preto (#000000) e altera para branco (#FFFFFF)
+      // mesclando o tom sempre em oposição direta ao fundo
+      heroTL.fromTo(movieDesc,
+        { color: '#000000' },
+        {
+          color: '#FFFFFF',
+          ease: 'power1.inOut',
+          duration: 0.85
+        },
+        0.08
+      );
+
       // C. Surgimento aleatório dos caracteres do parágrafo via SplitText
-      // Conforme o preto aparece, o texto adapta-se para o branco via blend mode
+      // O parágrafo começa preto e, durante a troca para o fundo preto, os caracteres surgem de forma aleatória em branco
       if (chars.length > 0) {
-        // Inicialmente visível em preto sobre o card branco.
-        // Ao iniciar a transição, os caracteres se desfazem sutilmente:
+        // Inicialmente visível em preto (#000000) sobre o card branco.
+        // Ao iniciar a transição, os caracteres pretos se desfazem sutilmente:
         heroTL.to(chars, {
           opacity: 0,
           y: -6,
@@ -310,19 +403,21 @@
           ease: 'power1.in'
         }, 0.05);
 
-        // Durante a troca, surgem de forma aleatória em branco conforme o preto toma conta:
+        // Durante a troca, surgem de forma aleatória na cor branca (#FFFFFF) conforme o preto toma conta:
         heroTL.fromTo(chars,
           {
             opacity: 0,
             y: 12,
             scale: 0.75,
-            filter: 'blur(4px)'
+            filter: 'blur(4px)',
+            color: '#FFFFFF'
           },
           {
             opacity: 1,
             y: 0,
             scale: 1,
             filter: 'blur(0px)',
+            color: '#FFFFFF',
             stagger: {
               from: 'random',
               amount: 0.55
@@ -340,6 +435,186 @@
         ease: 'power1.inOut',
         duration: 0.8
       }, 0.15);
+
+      // --- FASE 2: TRAILER EXPANSÍVEL & REPRODUÇÃO MUTADA (1.15 até 2.0) ---
+      // "ao finalizarmos a primeira transção, iremos carregar exibir um trailer que estará rolando, mutado.
+      // ele deverá iniciar com um tamanho e altura de zero e conforme o usuário vai rolando ele vai aumentando de tamanho,
+      // ocupando a largura e altura total da página"
+      heroTL.fromTo(trailerContainer,
+        {
+          width: '0vw',
+          height: '0vh',
+          borderRadius: '48px',
+          opacity: 0
+        },
+        {
+          width: '100vw',
+          height: '100vh',
+          borderRadius: '0px',
+          opacity: 1,
+          ease: 'power2.inOut',
+          duration: 0.85,
+          onStart: () => {
+            trailerContainer.classList.add('is-active');
+            if (trailerVideo.paused) {
+              trailerVideo.muted = true;
+              trailerVideo.play().catch(() => {});
+            }
+          },
+          onReverseComplete: () => {
+            trailerContainer.classList.remove('is-active');
+            trailerVideo.pause();
+          }
+        },
+        1.15
+      );
+
+      // Manter a experiência do trailer em tela cheia disponível para interação
+      heroTL.to({}, { duration: 0.25 }, 2.0);
+
+      // --- LÓGICA DO PLAYER CUSTOMIZADO (PLAY/PAUSE, PROGRESSO, SOM) ---
+      function formatTime(seconds) {
+        if (isNaN(seconds) || seconds < 0) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      }
+
+      function updatePlayState(isPlaying) {
+        if (isPlaying) {
+          iconPlay.style.display = 'none';
+          iconPause.style.display = 'block';
+          trailerOverlayPlay.classList.remove('is-visible');
+        } else {
+          iconPlay.style.display = 'block';
+          iconPause.style.display = 'none';
+          trailerOverlayPlay.classList.add('is-visible');
+        }
+      }
+
+      function togglePlay() {
+        if (trailerVideo.paused) {
+          trailerVideo.play().then(() => updatePlayState(true)).catch(() => {});
+        } else {
+          trailerVideo.pause();
+          updatePlayState(false);
+        }
+      }
+
+      if (trailerPlayBtn && trailerVideo) {
+        trailerPlayBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePlay();
+        });
+
+        trailerVideo.addEventListener('click', () => {
+          togglePlay();
+        });
+
+        // Atualização contínua da barra de progresso e tempo
+        let isDraggingProgress = false;
+
+        trailerVideo.addEventListener('timeupdate', () => {
+          if (!isDraggingProgress && trailerVideo.duration) {
+            const pct = (trailerVideo.currentTime / trailerVideo.duration) * 100;
+            trailerProgressBar.style.width = `${pct}%`;
+            trailerTime.textContent = `${formatTime(trailerVideo.currentTime)} / ${formatTime(trailerVideo.duration)}`;
+          }
+        });
+
+        trailerVideo.addEventListener('loadedmetadata', () => {
+          trailerTime.textContent = `0:00 / ${formatTime(trailerVideo.duration)}`;
+        });
+
+        trailerVideo.addEventListener('play', () => updatePlayState(true));
+        trailerVideo.addEventListener('pause', () => updatePlayState(false));
+
+        // Controle de Áudio / Mudo
+        if (trailerMuteBtn) {
+          trailerMuteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            trailerVideo.muted = !trailerVideo.muted;
+            if (trailerVideo.muted) {
+              iconMuted.style.display = 'block';
+              iconHigh.style.display = 'none';
+            } else {
+              iconMuted.style.display = 'none';
+              iconHigh.style.display = 'block';
+            }
+          });
+        }
+
+        // Navegação (Seek) na barra de progresso por clique ou arraste
+        function seekFromEvent(e) {
+          const rect = trailerProgressContainer.getBoundingClientRect();
+          const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+          const clickX = Math.max(0, Math.min(clientX - rect.left, rect.width));
+          const pct = clickX / rect.width;
+          trailerProgressBar.style.width = `${pct * 100}%`;
+          if (trailerVideo.duration) {
+            trailerVideo.currentTime = pct * trailerVideo.duration;
+            trailerTime.textContent = `${formatTime(trailerVideo.currentTime)} / ${formatTime(trailerVideo.duration)}`;
+          }
+        }
+
+        trailerProgressContainer.addEventListener('mousedown', (e) => {
+          isDraggingProgress = true;
+          trailerProgressContainer.classList.add('is-dragging');
+          seekFromEvent(e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (isDraggingProgress) {
+            seekFromEvent(e);
+          }
+        });
+
+        window.addEventListener('mouseup', () => {
+          if (isDraggingProgress) {
+            isDraggingProgress = false;
+            trailerProgressContainer.classList.remove('is-dragging');
+          }
+        });
+
+        // Suporte a Touch
+        trailerProgressContainer.addEventListener('touchstart', (e) => {
+          isDraggingProgress = true;
+          trailerProgressContainer.classList.add('is-dragging');
+          seekFromEvent(e);
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+          if (isDraggingProgress) {
+            seekFromEvent(e);
+          }
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+          if (isDraggingProgress) {
+            isDraggingProgress = false;
+            trailerProgressContainer.classList.remove('is-dragging');
+          }
+        });
+
+        // Auto-ocultar controles após 3s sem movimento
+        let hideControlsTimeout;
+        function resetControlsTimer() {
+          trailerControls.classList.remove('is-hidden');
+          clearTimeout(hideControlsTimeout);
+          if (!trailerVideo.paused) {
+            hideControlsTimeout = setTimeout(() => {
+              trailerControls.classList.add('is-hidden');
+            }, 3000);
+          }
+        }
+
+        trailerContainer.addEventListener('mousemove', resetControlsTimer);
+        trailerContainer.addEventListener('mouseleave', () => {
+          if (!trailerVideo.paused) {
+            trailerControls.classList.add('is-hidden');
+          }
+        });
+      }
     });
   </script>
 
