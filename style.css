@@ -43,6 +43,18 @@ html {
   scroll-behavior: smooth;
 }
 
+#smooth-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+#smooth-content {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
 body {
   width: 100%;
   min-height: 100vh;
@@ -278,6 +290,7 @@ body {
   height: 100%;
   z-index: 10;
   pointer-events: auto;
+  isolation: isolate;
 }
 
 /* O SVG que cria a silhueta recortada do card e clipa o fundo branco + Tom Holland */
@@ -358,13 +371,25 @@ body {
   font-size: 0.95rem;
   font-weight: 400;
   line-height: 1.65;
-  color: var(--color-text-dark);
+  color: #FFFFFF;
+  mix-blend-mode: difference;
   margin: 0;
   letter-spacing: -0.01em;
 }
 
 .movie-description strong {
   font-weight: 600;
+  color: inherit;
+}
+
+.movie-description .char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.movie-description .word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
@@ -563,15 +588,21 @@ body {
   }
 
   .hero-card {
+    position: relative;
     height: auto;
     min-height: 800px;
-    background: #FFFFFF;
+    background: transparent;
     border-radius: 24px;
     overflow: hidden;
   }
 
   .subtract-shape {
-    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
   }
 
   .card-content {
