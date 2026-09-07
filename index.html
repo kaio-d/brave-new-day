@@ -140,7 +140,7 @@
   </div>
 
   <!-- ========================================================================
-       SEGUNDA SEÇÃO: ELENCO (ZENDAYA / MICHELLE MJ JONES)
+       SEGUNDA SEÇÃO: ELENCO (HOMEM-ARANHA & ALIADOS)
        ======================================================================== -->
   <section class="cast-section" id="elenco" aria-label="Elenco do Filme">
     <div class="cast-stage">
@@ -150,47 +150,68 @@
           <span class="cast-title">ELENCO</span>
 
           <div class="cast-person-header">
-            <h2 class="cast-actor-name" id="castActorName">Zendaya</h2>
-            <p class="cast-character-name" id="castCharacterName">MICHELLE MJ JONES</p>
+            <h2 class="cast-actor-name" id="castActorName">Tom Holland</h2>
+            <p class="cast-character-name" id="castCharacterName">PETER PARKER</p>
           </div>
 
           <!-- Indicador vertical do elenco com ícone de aranha no item ativo -->
           <nav class="cast-navigation" aria-label="Seletor de Personagens">
             <div class="cast-timeline">
-              <div class="cast-timeline-track"></div>
+              <div class="cast-timeline-track">
+                <div class="cast-timeline-fill" id="castTimelineFill"></div>
+              </div>
               <div class="cast-marker" id="castMarker" aria-hidden="true">
                 <img src="assets/logo-spider.svg" alt="" class="cast-marker-icon">
               </div>
             </div>
             <ul class="cast-menu" role="tablist">
-              <li class="cast-menu-item" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
-                  MICHELLE MJ JONES
-                </button>
-              </li>
               <li class="cast-menu-item is-active" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="true" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="true" data-actor="Tom Holland" data-role="PETER PARKER" data-index="0">
+                  PETER PARKER
+                </button>
+              </li>
+              <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES" data-index="1">
                   MICHELLE MJ JONES
                 </button>
               </li>
               <li class="cast-menu-item" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
-                  MICHELLE MJ JONES
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Jacob Batalon" data-role="NED LEEDS" data-index="2">
+                  NED LEEDS
                 </button>
               </li>
               <li class="cast-menu-item" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
-                  MICHELLE MJ JONES
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Michael Mando" data-role="MAC GARGAN" data-index="3">
+                  MAC GARGAN
+                </button>
+              </li>
+              <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Mark Ruffalo" data-role="BRUCE BANNER" data-index="4">
+                  BRUCE BANNER
                 </button>
               </li>
             </ul>
           </nav>
         </div>
 
-        <!-- Coluna Direita: Imagem de Destaque -->
+        <!-- Coluna Direita: Showcase da Imagem & Slides (Transição de Cima para Baixo) -->
         <div class="cast-showcase">
-          <div class="cast-image-container">
-            <img src="assets/img25.webp" alt="Zendaya como Michelle MJ Jones" class="cast-image" id="castImage">
+          <div class="cast-image-container" id="castImageContainer">
+            <div class="cast-slide" data-index="0">
+              <img src="assets/elenco/img1.webp" alt="Tom Holland como Peter Parker" class="cast-image">
+            </div>
+            <div class="cast-slide" data-index="1">
+              <img src="assets/elenco/img2.webp" alt="Zendaya como Michelle MJ Jones" class="cast-image">
+            </div>
+            <div class="cast-slide" data-index="2">
+              <img src="assets/elenco/img3.webp" alt="Jacob Batalon como Ned Leeds" class="cast-image">
+            </div>
+            <div class="cast-slide" data-index="3">
+              <img src="assets/elenco/img4.webp" alt="Michael Mando como Mac Gargan" class="cast-image">
+            </div>
+            <div class="cast-slide" data-index="4">
+              <img src="assets/elenco/img5.webp" alt="Mark Ruffalo como Bruce Banner" class="cast-image">
+            </div>
           </div>
         </div>
       </div>
@@ -660,51 +681,192 @@
     });
   </script>
 
-  <!-- Script leve para interatividade do seletor de elenco -->
+  <!-- Script de animações de scroll da seção de Elenco com GSAP -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const items = document.querySelectorAll('.cast-menu-item');
-      const marker = document.getElementById('castMarker');
-      const timeline = document.querySelector('.cast-timeline');
-      const actorEl = document.getElementById('castActorName');
-      const roleEl = document.getElementById('castCharacterName');
+      const castData = [
+        { actor: 'Tom Holland', role: 'PETER PARKER' },
+        { actor: 'Zendaya', role: 'MICHELLE MJ JONES' },
+        { actor: 'Jacob Batalon', role: 'NED LEEDS' },
+        { actor: 'Michael Mando', role: 'MAC GARGAN' },
+        { actor: 'Mark Ruffalo', role: 'BRUCE BANNER' }
+      ];
 
-      function updateMarker(activeItem) {
-        if (!marker || !timeline || !activeItem) return;
-        const timelineRect = timeline.getBoundingClientRect();
-        const itemRect = activeItem.getBoundingClientRect();
-        const relativeTop = (itemRect.top - timelineRect.top) + (itemRect.height / 2);
-        marker.style.top = `${relativeTop}px`;
-      }
-
-      const currentActive = document.querySelector('.cast-menu-item.is-active');
-      if (currentActive) {
-        updateMarker(currentActive);
-      }
-
-      window.addEventListener('resize', () => {
-        const active = document.querySelector('.cast-menu-item.is-active');
-        if (active) updateMarker(active);
+      // Pré-carregamento imediato das imagens do elenco na memória
+      const castImages = [
+        'assets/elenco/img1.webp',
+        'assets/elenco/img2.webp',
+        'assets/elenco/img3.webp',
+        'assets/elenco/img4.webp',
+        'assets/elenco/img5.webp'
+      ];
+      castImages.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+        if (img.decode) img.decode().catch(() => {});
       });
 
-      items.forEach((item) => {
-        const btn = item.querySelector('.cast-menu-btn');
-        btn.addEventListener('click', () => {
-          items.forEach(i => {
-            i.classList.remove('is-active');
-            const b = i.querySelector('.cast-menu-btn');
-            if (b) b.setAttribute('aria-selected', 'false');
-          });
+      const castSlides = document.querySelectorAll('.cast-slide');
+      const castMarker = document.getElementById('castMarker');
+      const castTimelineFill = document.getElementById('castTimelineFill');
+      const castTimeline = document.querySelector('.cast-timeline');
+      const castMenuItems = document.querySelectorAll('.cast-menu-item');
+      const castActorEl = document.getElementById('castActorName');
+      const castRoleEl = document.getElementById('castCharacterName');
 
-          item.classList.add('is-active');
-          btn.setAttribute('aria-selected', 'true');
-          updateMarker(item);
+      // Configuração inicial de camadas dos slides:
+      // Slide 0 visível (yPercent: 0), slides 1 a 4 posicionados acima (yPercent: -100)
+      gsap.set(castSlides[0], { yPercent: 0 });
+      for (let i = 1; i < castSlides.length; i++) {
+        gsap.set(castSlides[i], { yPercent: -100 });
+      }
 
-          const actor = btn.getAttribute('data-actor');
-          const role = btn.getAttribute('data-role');
-          if (actorEl && actor) actorEl.textContent = actor;
-          if (roleEl && role) roleEl.textContent = role;
+      function getMarkerPositions() {
+        if (!castTimeline || castMenuItems.length === 0) return [];
+        const tlRect = castTimeline.getBoundingClientRect();
+        return Array.from(castMenuItems).map(item => {
+          const r = item.getBoundingClientRect();
+          return (r.top - tlRect.top) + (r.height / 2);
         });
+      }
+
+      let markerPositions = getMarkerPositions();
+      if (markerPositions.length > 0) {
+        gsap.set(castMarker, { top: `${markerPositions[0]}px` });
+        gsap.set(castTimelineFill, { height: `${markerPositions[0]}px` });
+      }
+
+      // Função para alternar o ator e personagem ativos
+      let currentCastIndex = 0;
+      function updateCastInfo(index) {
+        if (index === currentCastIndex) return;
+        currentCastIndex = index;
+
+        // Atualizar menu ativo
+        castMenuItems.forEach((item, idx) => {
+          const btn = item.querySelector('.cast-menu-btn');
+          if (idx === index) {
+            item.classList.add('is-active');
+            if (btn) btn.setAttribute('aria-selected', 'true');
+          } else {
+            item.classList.remove('is-active');
+            if (btn) btn.setAttribute('aria-selected', 'false');
+          }
+        });
+
+        // Transição suave dos nomes de ator e personagem
+        gsap.to([castActorEl, castRoleEl], {
+          opacity: 0,
+          y: -6,
+          duration: 0.15,
+          onComplete: () => {
+            if (castData[index]) {
+              castActorEl.textContent = castData[index].actor;
+              castRoleEl.textContent = castData[index].role;
+            }
+            gsap.to([castActorEl, castRoleEl], {
+              opacity: 1,
+              y: 0,
+              duration: 0.2
+            });
+          }
+        });
+      }
+
+      // Timeline GSAP da Seção de Elenco Pinada
+      const castTL = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.cast-section',
+          start: 'top top',
+          end: '+=3600',
+          pin: true,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const p = self.progress;
+            let targetIdx = 0;
+            if (p < 0.15) targetIdx = 0;
+            else if (p < 0.38) targetIdx = 1;
+            else if (p < 0.62) targetIdx = 2;
+            else if (p < 0.85) targetIdx = 3;
+            else targetIdx = 4;
+            updateCastInfo(targetIdx);
+          }
+        }
+      });
+
+      // Recalcular posições no redimensionamento da janela
+      window.addEventListener('resize', () => {
+        markerPositions = getMarkerPositions();
+        if (markerPositions.length > currentCastIndex) {
+          gsap.set(castMarker, { top: `${markerPositions[currentCastIndex]}px` });
+          gsap.set(castTimelineFill, { height: `${markerPositions[currentCastIndex]}px` });
+        }
+        ScrollTrigger.refresh();
+      });
+
+      // Construção das 4 transições de slides (de cima para baixo: yPercent -100 -> 0)
+      const initialHold = 0.5;
+      const stepDuration = 1.0;
+      const holdDuration = 0.5;
+
+      // Posição inicial no tempo 0 da timeline
+      castTL.set(castMarker, {
+        top: () => `${getMarkerPositions()[0] || 0}px`
+      }, 0);
+      castTL.set(castTimelineFill, {
+        height: () => `${getMarkerPositions()[0] || 0}px`
+      }, 0);
+
+      // Pausa inicial para o primeiro ator (Tom Holland / Peter Parker)
+      castTL.to({}, { duration: initialHold }, 0);
+
+      for (let i = 1; i < castSlides.length; i++) {
+        const startTime = initialHold + (i - 1) * (stepDuration + holdDuration);
+
+        // A imagem desce suavemente de cima para baixo
+        castTL.fromTo(castSlides[i],
+          { yPercent: -100 },
+          { yPercent: 0, duration: stepDuration, ease: 'power1.inOut' },
+          startTime
+        );
+
+        // A aranha desce até o item correspondente e a barra preenche a trilha
+        castTL.to(castMarker, {
+          top: () => `${getMarkerPositions()[i] || 0}px`,
+          duration: stepDuration,
+          ease: 'power1.inOut'
+        }, startTime);
+
+        castTL.to(castTimelineFill, {
+          height: () => `${getMarkerPositions()[i] || 0}px`,
+          duration: stepDuration,
+          ease: 'power1.inOut'
+        }, startTime);
+
+        // Pausa para visualização de cada imagem
+        castTL.to({}, { duration: holdDuration }, startTime + stepDuration);
+      }
+
+      // Clique nos botões do menu para rolar diretamente até o personagem
+      castMenuItems.forEach((item, idx) => {
+        const btn = item.querySelector('.cast-menu-btn');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            const st = castTL.scrollTrigger;
+            if (st) {
+              const progressMap = [0.038, 0.269, 0.50, 0.731, 0.962];
+              const targetScroll = st.start + (st.end - st.start) * progressMap[idx];
+              const smoother = typeof ScrollSmoother !== 'undefined' ? ScrollSmoother.get() : null;
+              if (smoother) {
+                smoother.scrollTo(targetScroll, true);
+              } else {
+                window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+              }
+            }
+          });
+        }
       });
     });
   </script>
