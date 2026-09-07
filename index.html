@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Spider-Man: Um Novo Dia - Lançamento 30/07. Em breve nos cinemas.">
+  <title>Spider-Man: Um Novo Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="hero-page">
+    <!-- Background cinematográfico vermelho com Spider-Man swinging -->
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg-image"></div>
+      <div class="hero-bg-gradient"></div>
+    </div>
+
+    <!-- Palco com proporção travada para manter alinhamento milimétrico em qualquer resolução -->
+    <div class="hero-stage">
+      <div class="hero-card-wrapper">
+        <!-- Canto Superior Esquerdo: Logos Spider + Marvel (confinado no recorte vermelho) -->
+        <header class="corner-top-left">
+          <div class="brand-logos">
+            <img src="assets/logo-spider.svg" alt="Spider Logo" class="logo-spider" width="38" height="50">
+            <img src="assets/logo-marvel.svg" alt="Marvel" class="logo-marvel" width="78" height="30">
+          </div>
+        </header>
+
+        <!-- Canto Superior Direito: Trailer + Comprar Ingresso (confinado no recorte vermelho fora do SVG) -->
+        <nav class="corner-top-right" aria-label="Navegação Principal">
+          <a href="#trailer" class="nav-trailer">TRAILER</a>
+          <a href="#comprar-ingresso" class="btn-ticket">COMPRAR INGRESSO</a>
+        </nav>
+
+        <!-- Card Central (com formato recortado do Subtract.svg) -->
+        <main class="hero-card">
+          <svg class="subtract-shape" viewBox="0 0 1856 1016" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <clipPath id="card-cutout-clip" clipPathUnits="userSpaceOnUse">
+                <path d="M1468 0C1500.58 0 1527 26.4152 1527 59V72C1527 104.585 1553.42 131 1586 131H1797C1829.58 131 1856 157.415 1856 190V957C1856 989.585 1829.58 1016 1797 1016H388C355.415 1016 329 989.585 329 957V944C329 911.415 302.585 885 270 885H59C26.4152 885 0 858.585 0 826V190C0 157.415 26.4152 131 59 131H270C302.585 131 329 104.585 329 72V59C329 26.4152 355.415 0 388 0H1468Z" />
+              </clipPath>
+            </defs>
+            <g clip-path="url(#card-cutout-clip)">
+              <!-- Fundo branco do card recortado -->
+              <rect x="0" y="0" width="1856" height="1016" fill="#FFFFFF" />
+              <!-- Foto de Tom Holland centrada e alinhada ao canvas de 1920x1080 com recorte perfeito -->
+              <image href="assets/img-01.webp" x="-32" y="-32" width="1920" height="1080" preserveAspectRatio="none" />
+            </g>
+          </svg>
+
+          <!-- Elementos de conteúdo alocados por cima do SVG -->
+          <div class="card-content">
+            <!-- Lado Esquerdo: Título e Subtítulo -->
+            <section class="card-left-section" aria-label="Título do Filme">
+              <img src="assets/titulo-spider-man.svg" alt="Spider-Man" class="title-spider-man">
+              <h1 class="title-novo-dia">UM NOVO DIA</h1>
+            </section>
+
+            <!-- Lado Direito: Sinopse descritiva posicionada ao lado da foto sem encostar -->
+            <section class="card-right-section" aria-label="Sinopse">
+              <p class="movie-description">
+                É um <strong>NOVO DIA</strong> para Peter Parker. Agora, ele combate o crime em tempo integral como Homem-Aranha em um mundo que não se lembra dele.
+              </p>
+            </section>
+
+            <!-- Canto Inferior Direito: Selo circular interativo "Role a Página" -->
+            <a href="#elenco" class="scroll-badge" aria-label="Role a página para ver o elenco">
+              <div class="badge-rotator">
+                <img src="assets/role-pagina.svg" alt="Role a página" class="badge-text">
+              </div>
+              <img src="assets/mao.svg" alt="Mão disparando teia" class="badge-hand">
+            </a>
+          </div>
+        </main>
+
+        <!-- Canto Inferior Esquerdo: Lançamento (confinado no recorte vermelho fora do SVG) -->
+        <footer class="corner-bottom-left">
+          <div class="release-container">
+            <span class="release-label">LANÇAMENTO</span>
+            <strong class="release-date">30/07</strong>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SEGUNDA SEÇÃO: ELENCO (ZENDAYA / MICHELLE MJ JONES)
+       ======================================================================== -->
+  <section class="cast-section" id="elenco" aria-label="Elenco do Filme">
+    <div class="cast-stage">
+      <div class="cast-wrapper">
+        <!-- Coluna Esquerda: Informações e Menu do Elenco -->
+        <div class="cast-sidebar">
+          <span class="cast-title">ELENCO</span>
+
+          <div class="cast-person-header">
+            <h2 class="cast-actor-name" id="castActorName">Zendaya</h2>
+            <p class="cast-character-name" id="castCharacterName">MICHELLE MJ JONES</p>
+          </div>
+
+          <!-- Indicador vertical do elenco com ícone de aranha no item ativo -->
+          <nav class="cast-navigation" aria-label="Seletor de Personagens">
+            <div class="cast-timeline">
+              <div class="cast-timeline-track"></div>
+              <div class="cast-marker" id="castMarker" aria-hidden="true">
+                <img src="assets/logo-spider.svg" alt="" class="cast-marker-icon">
+              </div>
+            </div>
+            <ul class="cast-menu" role="tablist">
+              <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
+                </button>
+              </li>
+              <li class="cast-menu-item is-active" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="true" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
+                </button>
+              </li>
+              <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
+                </button>
+              </li>
+              <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Coluna Direita: Imagem de Destaque -->
+        <div class="cast-showcase">
+          <div class="cast-image-container">
+            <img src="assets/img25.webp" alt="Zendaya como Michelle MJ Jones" class="cast-image" id="castImage">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Script leve para interatividade do seletor de elenco -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll('.cast-menu-item');
+      const marker = document.getElementById('castMarker');
+      const timeline = document.querySelector('.cast-timeline');
+      const actorEl = document.getElementById('castActorName');
+      const roleEl = document.getElementById('castCharacterName');
+
+      function updateMarker(activeItem) {
+        if (!marker || !timeline || !activeItem) return;
+        const timelineRect = timeline.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        const relativeTop = (itemRect.top - timelineRect.top) + (itemRect.height / 2);
+        marker.style.top = `${relativeTop}px`;
+      }
+
+      const currentActive = document.querySelector('.cast-menu-item.is-active');
+      if (currentActive) {
+        updateMarker(currentActive);
+      }
+
+      window.addEventListener('resize', () => {
+        const active = document.querySelector('.cast-menu-item.is-active');
+        if (active) updateMarker(active);
+      });
+
+      items.forEach((item) => {
+        const btn = item.querySelector('.cast-menu-btn');
+        btn.addEventListener('click', () => {
+          items.forEach(i => {
+            i.classList.remove('is-active');
+            const b = i.querySelector('.cast-menu-btn');
+            if (b) b.setAttribute('aria-selected', 'false');
+          });
+
+          item.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+          updateMarker(item);
+
+          const actor = btn.getAttribute('data-actor');
+          const role = btn.getAttribute('data-role');
+          if (actorEl && actor) actorEl.textContent = actor;
+          if (roleEl && role) roleEl.textContent = role;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
