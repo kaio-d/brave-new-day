@@ -783,6 +783,8 @@ p {
   position: absolute;
   top: 0;
   bottom: 0;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.28);
   width: 2px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 999px;
@@ -804,6 +806,7 @@ p {
 .cast-marker {
   position: absolute;
   left: 50%;
+  top: 38%;
   top: 0px;
   transform: translate(-50%, -50%);
   display: flex;
@@ -813,6 +816,7 @@ p {
   height: 32px;
   background-color: #000000;
   padding: 3px 0;
+  transition: top 0.35s cubic-bezier(0.25, 1, 0.5, 1);
   z-index: 2;
   will-change: top;
 }
@@ -861,11 +865,13 @@ p {
 }
 
 .cast-menu-item.is-active .cast-menu-btn {
+  color: rgba(255, 255, 255, 0.80);
   color: rgba(255, 255, 255, 0.95);
   font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
+   Coluna Direita: Showcase da Imagem
    Coluna Direita: Showcase da Imagem & Slides (Transição de Cima para Baixo)
    -------------------------------------------------------------------------- */
 .cast-showcase {
@@ -915,6 +921,8 @@ p {
 
 .cast-image {
   width: 100%;
+  height: auto;
+  max-height: 82vh;
   height: 100%;
   object-fit: cover;
   object-position: center;

@@ -140,6 +140,7 @@
   </div>
 
   <!-- ========================================================================
+       SEGUNDA SEÇÃO: ELENCO (ZENDAYA / MICHELLE MJ JONES)
        SEGUNDA SEÇÃO: ELENCO (HOMEM-ARANHA & ALIADOS)
        ======================================================================== -->
   <section class="cast-section" id="elenco" aria-label="Elenco do Filme">
@@ -150,6 +151,8 @@
           <span class="cast-title">ELENCO</span>
 
           <div class="cast-person-header">
+            <h2 class="cast-actor-name" id="castActorName">Zendaya</h2>
+            <p class="cast-character-name" id="castCharacterName">MICHELLE MJ JONES</p>
             <h2 class="cast-actor-name" id="castActorName">Tom Holland</h2>
             <p class="cast-character-name" id="castCharacterName">PETER PARKER</p>
           </div>
@@ -157,6 +160,7 @@
           <!-- Indicador vertical do elenco com ícone de aranha no item ativo -->
           <nav class="cast-navigation" aria-label="Seletor de Personagens">
             <div class="cast-timeline">
+              <div class="cast-timeline-track"></div>
               <div class="cast-timeline-track">
                 <div class="cast-timeline-fill" id="castTimelineFill"></div>
               </div>
@@ -171,21 +175,29 @@
                 </button>
               </li>
               <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
                 <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES" data-index="1">
                   MICHELLE MJ JONES
                 </button>
               </li>
+              <li class="cast-menu-item is-active" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="true" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
               <li class="cast-menu-item" role="presentation">
                 <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Jacob Batalon" data-role="NED LEEDS" data-index="2">
                   NED LEEDS
                 </button>
               </li>
               <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
                 <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Michael Mando" data-role="MAC GARGAN" data-index="3">
                   MAC GARGAN
                 </button>
               </li>
               <li class="cast-menu-item" role="presentation">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                  MICHELLE MJ JONES
                 <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Mark Ruffalo" data-role="BRUCE BANNER" data-index="4">
                   BRUCE BANNER
                 </button>
@@ -194,8 +206,11 @@
           </nav>
         </div>
 
+        <!-- Coluna Direita: Imagem de Destaque -->
         <!-- Coluna Direita: Showcase da Imagem & Slides (Transição de Cima para Baixo) -->
         <div class="cast-showcase">
+          <div class="cast-image-container">
+            <img src="assets/img25.webp" alt="Zendaya como Michelle MJ Jones" class="cast-image" id="castImage">
           <div class="cast-image-container" id="castImageContainer">
             <div class="cast-slide" data-index="0">
               <img src="assets/elenco/img1.webp" alt="Tom Holland como Peter Parker" class="cast-image">
@@ -681,9 +696,15 @@
     });
   </script>
 
+  <!-- Script leve para interatividade do seletor de elenco -->
   <!-- Script de animações de scroll da seção de Elenco com GSAP -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll('.cast-menu-item');
+      const marker = document.getElementById('castMarker');
+      const timeline = document.querySelector('.cast-timeline');
+      const actorEl = document.getElementById('castActorName');
+      const roleEl = document.getElementById('castCharacterName');
       const castData = [
         { actor: 'Tom Holland', role: 'PETER PARKER' },
         { actor: 'Zendaya', role: 'MICHELLE MJ JONES' },
@@ -692,6 +713,12 @@
         { actor: 'Mark Ruffalo', role: 'BRUCE BANNER' }
       ];
 
+      function updateMarker(activeItem) {
+        if (!marker || !timeline || !activeItem) return;
+        const timelineRect = timeline.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        const relativeTop = (itemRect.top - timelineRect.top) + (itemRect.height / 2);
+        marker.style.top = `${relativeTop}px`;
       // Pré-carregamento imediato das imagens do elenco na memória
       const castImages = [
         'assets/elenco/img1.webp',
@@ -721,6 +748,9 @@
         gsap.set(castSlides[i], { yPercent: -100 });
       }
 
+      const currentActive = document.querySelector('.cast-menu-item.is-active');
+      if (currentActive) {
+        updateMarker(currentActive);
       function getMarkerPositions() {
         if (!castTimeline || castMenuItems.length === 0) return [];
         const tlRect = castTimeline.getBoundingClientRect();
@@ -798,6 +828,8 @@
 
       // Recalcular posições no redimensionamento da janela
       window.addEventListener('resize', () => {
+        const active = document.querySelector('.cast-menu-item.is-active');
+        if (active) updateMarker(active);
         markerPositions = getMarkerPositions();
         if (markerPositions.length > currentCastIndex) {
           gsap.set(castMarker, { top: `${markerPositions[currentCastIndex]}px` });
@@ -806,6 +838,7 @@
         ScrollTrigger.refresh();
       });
 
+      items.forEach((item) => {
       // Construção das 4 transições de slides (de cima para baixo: yPercent -100 -> 0)
       const initialHold = 0.5;
       const stepDuration = 1.0;
@@ -852,6 +885,11 @@
       // Clique nos botões do menu para rolar diretamente até o personagem
       castMenuItems.forEach((item, idx) => {
         const btn = item.querySelector('.cast-menu-btn');
+        btn.addEventListener('click', () => {
+          items.forEach(i => {
+            i.classList.remove('is-active');
+            const b = i.querySelector('.cast-menu-btn');
+            if (b) b.setAttribute('aria-selected', 'false');
         if (btn) {
           btn.addEventListener('click', () => {
             const st = castTL.scrollTrigger;
@@ -866,6 +904,16 @@
               }
             }
           });
+
+          item.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+          updateMarker(item);
+
+          const actor = btn.getAttribute('data-actor');
+          const role = btn.getAttribute('data-role');
+          if (actorEl && actor) actorEl.textContent = actor;
+          if (roleEl && role) roleEl.textContent = role;
+        });
         }
       });
     });
