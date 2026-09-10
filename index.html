@@ -11,6 +11,37 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- ========================================================================
+       PRELOADER CINEMATOGRÁFICO COM GSAP DRAWSVG
+       ======================================================================== -->
+  <div id="preloader" class="preloader-overlay" aria-label="Tela de Carregamento">
+    <!-- Top-Left: Título Spider-Man -->
+    <div class="preloader-header">
+      <img src="assets/titulo-spider-man.svg" alt="Spider-Man" class="preloader-title">
+    </div>
+
+    <!-- SVG Canvas fullscreen para traçar a teia disparada com DrawSVG -->
+    <svg class="preloader-web-canvas" id="preloaderWebCanvas" aria-hidden="true">
+      <line id="preloaderWebShot" class="preloader-web-line" x1="0" y1="0" x2="0" y2="0" />
+    </svg>
+
+    <!-- Bottom-Left: SVG da Teia -->
+    <div class="preloader-web-wrapper" id="preloaderWebWrapper">
+      <img src="assets/teia.svg" alt="Teia" class="preloader-web-icon" id="preloaderWebIcon">
+    </div>
+
+    <!-- Right Edge: Mão do Homem-Aranha (surge a 75%) -->
+    <div class="preloader-hand-wrapper" id="preloaderHandWrapper">
+      <img src="assets/mao.svg" alt="Mão Homem-Aranha" class="preloader-hand-icon" id="preloaderHandIcon">
+    </div>
+
+    <!-- Bottom-Right: Indicador de Progresso -->
+    <div class="preloader-counter-container">
+      <span class="preloader-counter-label">Loading</span>
+      <span class="preloader-counter-number" id="preloaderPercent">0 %</span>
+    </div>
+  </div>
+
   <div id="smooth-wrapper">
     <div id="smooth-content">
       <div class="hero-page">
@@ -153,8 +184,6 @@
           <div class="cast-person-header">
             <h2 class="cast-actor-name" id="castActorName">Zendaya</h2>
             <p class="cast-character-name" id="castCharacterName">MICHELLE MJ JONES</p>
-            <h2 class="cast-actor-name" id="castActorName">Tom Holland</h2>
-            <p class="cast-character-name" id="castCharacterName">PETER PARKER</p>
           </div>
 
           <!-- Indicador vertical do elenco com ícone de aranha no item ativo -->
@@ -180,26 +209,10 @@
                   MICHELLE MJ JONES
                 </button>
               </li>
-              <li class="cast-menu-item is-active" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="true" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
-                  MICHELLE MJ JONES
-              <li class="cast-menu-item" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Jacob Batalon" data-role="NED LEEDS" data-index="2">
-                  NED LEEDS
-                </button>
-              </li>
-              <li class="cast-menu-item" role="presentation">
+                <li class="cast-menu-item" role="presentation">
                 <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
+                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES" data-index="1">
                   MICHELLE MJ JONES
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Michael Mando" data-role="MAC GARGAN" data-index="3">
-                  MAC GARGAN
-                </button>
-              </li>
-              <li class="cast-menu-item" role="presentation">
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Zendaya" data-role="MICHELLE MJ JONES">
-                  MICHELLE MJ JONES
-                <button type="button" class="cast-menu-btn" role="tab" aria-selected="false" data-actor="Mark Ruffalo" data-role="BRUCE BANNER" data-index="4">
-                  BRUCE BANNER
                 </button>
               </li>
             </ul>
@@ -236,14 +249,15 @@
   </div>
 
   <!-- ========================================================================
-       BIBLIOTECAS GSAP: Core, ScrollTrigger, ScrollSmoother e SplitText
+       BIBLIOTECAS GSAP: Core, ScrollTrigger, ScrollSmoother, SplitText e DrawSVG
        ======================================================================== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://assets.codepen.io/16327/ScrollSmoother.min.js"></script>
   <script src="https://assets.codepen.io/16327/SplitText3.min.js"></script>
+  <script src="https://assets.codepen.io/16327/DrawSVGPlugin3.min.js"></script>
 
-  <!-- Script principal de animações de scroll cinematográfico -->
+  <!-- Script principal de animações de scroll cinematográfico & Preloader -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // 1. Pré-carregamento imediato dos 59 frames na memória para renderização fluida
@@ -267,6 +281,7 @@
       const plugins = [ScrollTrigger];
       if (typeof ScrollSmoother !== 'undefined') plugins.push(ScrollSmoother);
       if (typeof SplitText !== 'undefined') plugins.push(SplitText);
+      if (typeof DrawSVGPlugin !== 'undefined') plugins.push(DrawSVGPlugin);
       gsap.registerPlugin(...plugins);
 
       // 3. ScrollSmoother para rolagem cinematográfica inercial
@@ -280,6 +295,167 @@
           normalizeScroll: false
         });
       }
+
+      // ------------------------------------------------------------------------
+      // PRELOADER CINEMATOGRÁFICO COM GSAP DRAWSVG
+      // ------------------------------------------------------------------------
+      const preloader = document.getElementById('preloader');
+      const preloaderPercent = document.getElementById('preloaderPercent');
+      const preloaderHandWrapper = document.getElementById('preloaderHandWrapper');
+      const preloaderHandIcon = document.getElementById('preloaderHandIcon');
+      const preloaderWebIcon = document.getElementById('preloaderWebIcon');
+      const preloaderWebShot = document.getElementById('preloaderWebShot');
+
+      function updateWebCoordinates() {
+        if (!preloaderHandIcon || !preloaderWebIcon || !preloaderWebShot) return;
+        const handRect = preloaderHandIcon.getBoundingClientRect();
+        const webRect = preloaderWebIcon.getBoundingClientRect();
+
+        // Ponto de saída da teia na palma / pulso do Homem-Aranha (quando a mão está no x: 0%)
+        const shooterX = window.innerWidth - (handRect.width * 0.76);
+        const shooterY = window.innerHeight * 0.58;
+
+        // Ponto de conexão na ponta direita da teia.svg (x: 284, y: 140.8 em viewBox de 284x286)
+        const targetX = webRect.right;
+        const targetY = webRect.top + (webRect.height * (140.8 / 286));
+
+        preloaderWebShot.setAttribute('x1', shooterX);
+        preloaderWebShot.setAttribute('y1', shooterY);
+        preloaderWebShot.setAttribute('x2', targetX);
+        preloaderWebShot.setAttribute('y2', targetY);
+      }
+
+      window.addEventListener('resize', updateWebCoordinates);
+      updateWebCoordinates();
+      gsap.set(preloaderWebShot, { opacity: 0 });
+
+      // Trava de rolagem enquanto o preloader está ativo
+      document.body.style.overflow = 'hidden';
+      if (smoother) smoother.paused(true);
+
+      const progressData = { val: 0 };
+      const preloaderTL = gsap.timeline({
+        onComplete: () => {
+          if (preloader) {
+            preloader.style.display = 'none';
+          }
+          document.body.style.overflow = '';
+          if (smoother) smoother.paused(false);
+          ScrollTrigger.refresh();
+        }
+      });
+
+      // Estágio 1: 0% a 74% - Apenas título, teia e porcentagem
+      preloaderTL.to(progressData, {
+        val: 74,
+        duration: 1.2,
+        ease: 'power1.inOut',
+        onUpdate: () => {
+          if (preloaderPercent) {
+            preloaderPercent.textContent = `${Math.round(progressData.val)} %`;
+          }
+        }
+      });
+
+      // Estágio 2: 75% a 94% - Mão do Homem-Aranha surge pelo canto direito da tela
+      preloaderTL.to(preloaderHandWrapper, {
+        x: '0%',
+        duration: 0.42,
+        ease: 'back.out(1.3)'
+      }, '+=0.02');
+
+      preloaderTL.to(progressData, {
+        val: 94,
+        duration: 0.55,
+        ease: 'power1.out',
+        onUpdate: () => {
+          if (preloaderPercent) {
+            preloaderPercent.textContent = `${Math.round(progressData.val)} %`;
+          }
+        }
+      }, '<');
+
+      // Estágio 3: 95% - GSAP DrawSVG disparando teia da mão até o SVG da teia
+      preloaderTL.to(progressData, {
+        val: 95,
+        duration: 0.1,
+        ease: 'none',
+        onUpdate: () => {
+          if (preloaderPercent) {
+            preloaderPercent.textContent = `${Math.round(progressData.val)} %`;
+          }
+        }
+      });
+
+      // Torna a linha visível e recalcula coordenadas imediatamente antes de traçar a teia
+      preloaderTL.add(() => {
+        updateWebCoordinates();
+      });
+      preloaderTL.set(preloaderWebShot, { opacity: 1 });
+
+      if (typeof DrawSVGPlugin !== 'undefined') {
+        preloaderTL.fromTo(preloaderWebShot,
+          { drawSVG: '0%' },
+          { drawSVG: '100%', duration: 0.28, ease: 'power2.out' }
+        );
+      } else {
+        // Fallback nativo transparente com strokeDasharray e strokeDashoffset
+        preloaderTL.add(() => {
+          if (preloaderWebShot) {
+            const x1 = parseFloat(preloaderWebShot.getAttribute('x1') || 0);
+            const y1 = parseFloat(preloaderWebShot.getAttribute('y1') || 0);
+            const x2 = parseFloat(preloaderWebShot.getAttribute('x2') || 0);
+            const y2 = parseFloat(preloaderWebShot.getAttribute('y2') || 0);
+            const len = Math.hypot(x2 - x1, y2 - y1);
+            preloaderWebShot.style.strokeDasharray = `${len}`;
+            preloaderWebShot.style.strokeDashoffset = `${len}`;
+          }
+        });
+        preloaderTL.to(preloaderWebShot, {
+          strokeDashoffset: 0,
+          duration: 0.28,
+          ease: 'power2.out'
+        });
+      }
+
+      // Efeito de impacto no momento que a teia acerta a teia e recoil na mão
+      preloaderTL.to(preloaderWebIcon, {
+        scale: 1.14,
+        duration: 0.08,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power2.out'
+      }, '<+=0.18');
+
+      preloaderTL.to(preloaderHandWrapper, {
+        x: '14px',
+        duration: 0.08,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power1.inOut'
+      }, '<');
+
+      // Avança de 95% para 100%
+      preloaderTL.to(progressData, {
+        val: 100,
+        duration: 0.25,
+        ease: 'power1.out',
+        onUpdate: () => {
+          if (preloaderPercent) {
+            preloaderPercent.textContent = `${Math.round(progressData.val)} %`;
+          }
+        }
+      });
+
+      // Breve pausa para registrar 100%
+      preloaderTL.to({}, { duration: 0.2 });
+
+      // Estágio Final: Marco de 100% - Tela saindo pelo lado direito abrindo a tela principal
+      preloaderTL.to(preloader, {
+        xPercent: 100,
+        duration: 0.85,
+        ease: 'power3.inOut'
+      });
 
       // Navegação suave ao clicar em âncoras (ex: #elenco)
       document.querySelectorAll('a[href^="#"]').forEach((link) => {
